@@ -86,6 +86,7 @@ world-away/
 ├─ notebooks/
 ├─ env.example
 ├─ requirements.txt
+├─ .gitignore
 ├─ README.md
 └─ LICENSE
 ```
