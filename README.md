@@ -85,7 +85,7 @@ world-away/
 ├─ tests/
 ├─ notebooks/
 ├─ env.example
-├─ environment.yml
+├─ requirements.txt
 ├─ README.md
 └─ LICENSE
 ```
@@ -121,21 +121,26 @@ world-away/
 git clone https://github.com/<usuario>/a_world_away-exoplanet_detection_with_ai.git
 cd a_world_away-exoplanet_detection_with_ai
 ```
-2. Crear entorno Conda:
+2. Crear un entorno virtual con Python estándar:
 ```bash
-conda env create -f environment.yml
-conda activate world-away
+python3 -m venv venv
+source venv/bin/activate
 ```
-3. Variables de entorno (env.example):
+3. Instalar dependencias desde requirements.txt (en vez de environment.yml):
+```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+4. Variables de entorno (env.example):
 ```bash
 NASA_API_KEY=DEMO_KEY
 CACHE_TTL_H=24
 ```
-4. Ejecutar la app:
+5. Ejecutar la app:
 ```bash
 streamlit run app/Home.py
 ```
-5. Ejecutar tests:
+6. Ejecutar tests:
 ```bash
 pytest -q
 ```
