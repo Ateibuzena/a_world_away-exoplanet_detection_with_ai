@@ -43,6 +43,7 @@
 
 ## 🏗️ Arquitectura del proyecto
 
+```
 [NASA APIs / CSV / FITS]
 |
 [data/loaders] --> [preprocessing] --> [models] --> [metrics]
@@ -52,7 +53,7 @@
 +--> [Streamlit UI]
 |
 +--> [export/io]
-
+```
 
 **Stack Python:**
 
@@ -64,7 +65,7 @@
 ---
 
 ## 📂 Estructura del repositorio
-
+```
 world-away/
 ├─ app/
 │ ├─ Home.py
@@ -87,7 +88,7 @@ world-away/
 ├─ environment.yml
 ├─ README.md
 └─ LICENSE
-
+```
 
 ---
 
