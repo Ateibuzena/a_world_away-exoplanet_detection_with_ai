@@ -1,176 +1,212 @@
----
+# A World Away: Hunting for Exoplanets with AI
 
-# Meteor Madness — Impact Simulation & Visualization Tool
-
-### NASA Space Apps Challenge 2025
-
-**Impactor-2025** es una aplicación web interactiva que permite simular impactos de asteroides sobre la Tierra, visualizar sus efectos y estimar la población e infraestructuras afectadas. Está pensada para público general, educadores y gestores de emergencias, utilizando datos reales de NASA y capas geográficas abiertas.
+> **Proyecto:** 2025 NASA Space Apps Challenge  
+> **Descripción:** App interactiva para entrenar y desplegar modelos de IA que detecten exoplanetas usando datasets abiertos de misiones espaciales (Kepler, K2, TESS).  
 
 ---
 
-## 0. Pitch (60s)
+## 🪐 Resumen
 
-Una app web interactiva para explorar el riesgo de impactos de asteroides. Selecciona un asteroide real o define tamaño y velocidad, elige el punto de impacto y visualiza las consecuencias: onda de choque, radiación térmica, cráter, eyección e incluso tsunamis. Integra datos NASA (órbitas, probabilidades de impacto) y capas USGS con población para estimar exposición. Transparente, educativa y rápida: menos de 3 segundos por escenario.
-
----
-
-## 1. Objetivos del Producto
-
-* **Comprensión**: traducir la física de impactos en visualizaciones claras.
-* **Toma de decisiones**: mostrar métricas clave (área afectada, población expuesta, infraestructura crítica).
-* **Transparencia**: parámetros visibles, supuestos claros, datos abiertos.
-
-**KPIs:**
-
-* Simulación en menos de 3 segundos por escenario.
-* Mapa interactivo con capas dinámicas.
-* Exportación en PNG, PDF y JSON.
+**A World Away** permite a usuarios explorar datasets reales de curvas de luz, entrenar modelos de ML, visualizar predicciones y entender cómo se detectan exoplanetas. Está pensado tanto para investigadores amateurs como para público general curioso por la astrofísica.
 
 ---
 
-## 2. Usuarios y Historias de Usuario
+## 🎯 Objetivos
+
+- **Automatización:** detectar exoplanetas sin intervención manual.  
+- **Interpretabilidad:** mostrar cómo el modelo identifica candidatos con métricas y visualizaciones.  
+- **Educación:** aprender sobre métodos de detección y parámetros de exoplanetas.
+
+**KPIs demo:**
+
+- Precisión del modelo > 85% sobre dataset de test.  
+- Tiempo de predicción < 1 s por curva de luz.  
+- Visualización interactiva de al menos 3 datasets de misión diferentes.
+
+---
+
+## 👤 Usuarios y Historias
 
 **Perfiles:**
 
-* Ciudadanía curiosa: entender el riesgo mediante sliders.
-* Gestores de emergencia: estimar población afectada, exportar resultados.
-* Educadores: usar presets y compartir capturas.
+1. Investigador amateur: entrenar y probar modelos con datos reales.  
+2. Educador / estudiante: explorar datasets y visualizar detección de exoplanetas.  
+3. Público general curioso: interactuar con gráficos y predicciones sin conocimientos de ML.
 
-**Historias (MVP):**
+**Historias MVP:**
 
-* Seleccionar asteroide real o manual y ver radios de daño.
-* Estimar población en cada anillo de afectación.
-* Activar capas educativas (uso del suelo, elevación).
-
----
-
-## 3. Alcance del Proyecto
-
-**MVP:**
-
-* UI web (Streamlit) con mapa interactivo.
-* Motor de efectos básicos (onda de choque, térmica, cráter).
-* Estimación de población afectada.
-* Exportación de resultados.
-
-**Stretch Goals:**
-
-* Modelado de tsunami y shakemap sísmica.
-* Estrategias de mitigación (desvío, fragmentación).
-* Story mode educativo.
+- Como usuario, quiero **cargar un dataset** y **ver curvas de luz**.  
+- Como usuario, quiero **visualizar predicciones** del modelo en nuevos datos.  
+- Como educador, quiero **explicaciones de métricas y parámetros** para enseñar sobre detección de exoplanetas.
 
 ---
 
-## 4. Fuentes de Datos
+## 🏗️ Arquitectura del proyecto
 
-* **Asteroides:** NASA SBDB, Sentry, NEO feeds.
-* **Topografía:** USGS 3DEP.
-* **Población:** WorldPop, GPW, HRSL.
-* **Costas y batimetría:** GEBCO, ETOPO1.
-* **Otros:** mock de POIs para infraestructuras.
+[NASA APIs / CSV / FITS]
+|
+[data/loaders] --> [preprocessing] --> [models] --> [metrics]
+| |
++--> [visualization/plots] <---------+
+|
++--> [Streamlit UI]
+|
++--> [export/io]
 
----
 
-## 5. Arquitectura
+**Stack Python:**
 
-**Front-end:** Streamlit con Leaflet/pydeck para mapas.
-**Back-end:** Motor físico en Python con módulos organizados por funcionalidad.
-**Geo:** GeoPandas, Shapely, Rasterio para análisis espacial.
-**Numérico:** NumPy, SciPy.
-**Visualización:** Altair, pydeck.
-
-**Diagrama lógico:**
-NASA APIs + USGS DEM → Data Loaders + Caché → Motor de efectos → Análisis de exposición → Streamlit UI → Exportación.
-
----
-
-## 6. Diseño de la UI
-
-**Sidebar:**
-
-* Selección de asteroide o input manual.
-* Parámetros: tamaño, velocidad, ángulo, densidad, superficie (tierra/agua).
-* Botón de simulación.
-
-**Lienzo principal:**
-
-* Mapa interactivo con anillos de daño.
-* Tarjetas con métricas (energía, radios, población).
-* Pestañas: Resultado, Supuestos, Mitigación, Exportar.
+- **Web/UI:** Streamlit, Plotly, Altair  
+- **ML:** Scikit-learn, TensorFlow/Keras o PyTorch, pandas, NumPy  
+- **Otros:** Pydantic (schemas), Requests/HTTPX para APIs  
+- **Tests:** pytest para pipelines y funciones críticas  
 
 ---
 
-## 7. Modelado de Efectos
+## 📂 Estructura del repositorio
 
-* Entrada atmosférica: decide airburst o impacto.
-* Cráter: escalado con π-group.
-* Onda de choque: decaimiento de sobrepresión vs distancia.
-* Térmica: fracción radiada, atenuación.
-* Eyección: radio de depósito.
-* **Opcional:** tsunami simplificado y shakemap sintética.
+world-away/
+├─ app/
+│ ├─ Home.py
+│ ├─ pages/
+│ │ ├─ 1_Explorar_Datasets.py
+│ │ ├─ 2_Entrenar_Modelo.py
+│ │ └─ 3_Prediccion_Exoplanetas.py
+│ └─ assets/
+├─ src/
+│ ├─ core/preprocessing.py
+│ ├─ core/models.py
+│ ├─ core/metrics.py
+│ ├─ data/loaders.py
+│ ├─ visualization/plots.py
+│ ├─ export/io.py
+├─ data/samples/
+├─ tests/
+├─ notebooks/
+├─ env.example
+├─ environment.yml
+├─ README.md
+└─ LICENSE
 
----
-
-## 8. Esquema de Datos
-
-* **ScenarioIn:** parámetros del asteroide, ubicación y superficie.
-* **ScenarioOut:** energía, radios de daño, geometrías de anillos, población afectada.
-
----
-
-## 9. Estructura del Repositorio
-
-meteor-madness/
-
-* app/ (Streamlit)
-* src/ (motor físico, analytics, loaders, export)
-* data/ (caché y muestras)
-* tests/ (pytest + hypothesis)
-* notebooks/ (validación y análisis)
-* environment.yml
-* README.md
 
 ---
 
-## 10. Plan de Trabajo (1–2 semanas)
+## ⚡ Pipeline de ML
 
-* Día 1-2: Configuración de repo y entorno, motor físico básico.
-* Día 3-4: Conectores NASA y mapa interactivo.
-* Día 5-6: Story mode y Monte Carlo para incertidumbre.
-* Día 7+: Stretch goals.
-
----
-
-## 11. Stack Tecnológico
-
-* **Lenguaje:** Python 3.11+
-* **Framework UI:** Streamlit
-* **Geoespacial:** GeoPandas, Shapely, Rasterio, pyproj
-* **Visualización:** Folium, pydeck, Altair
-* **Otros:** Pydantic, Requests, loguru
-* **Testing:** pytest, hypothesis
+1. **Preprocesamiento:** normalización, detrending, padding/interpolación.  
+2. **Split dataset:** train / validation / test.  
+3. **Entrenamiento:** Random Forest / CNN 1D / LSTM según elección.  
+4. **Evaluación:** métricas de clasificación y validación cruzada.  
+5. **Predicción:** aplicar a nuevos archivos y mostrar probabilidades.  
+6. **Interpretabilidad (stretch):** SHAP / LIME sobre curvas de luz.
 
 ---
 
-## 12. Licencia y Atribuciones
+## 📊 Funcionalidades principales
 
-* Datos NASA y USGS (open data).
-* Proyecto bajo licencia MIT.
-
----
-
-## 13. Entregables Finales
-
-* Repositorio en GitHub con instrucciones.
-* Video demo (2–3 minutos).
-* Informe PDF de ejemplo.
-* Capturas PNG de escenarios.
+- Cargar datasets CSV o FITS y visualizar curvas de luz.  
+- Entrenar modelos de ML y predecir exoplanetas automáticamente.  
+- Panel de métricas: precisión, recall, F1, curva ROC.  
+- Exportar resultados en CSV y PNG.  
+- Interpretabilidad básica: probabilidades, curvas ROC.  
+- Contenido educativo: guía de lectura de curvas, glosario y ejemplos interactivos.
 
 ---
 
-### **¿Qué sigue?**
+## 🔧 Instalación
 
-* Generar el repositorio base con esta estructura.
-* Crear prototipo Streamlit: mapa con círculo de 1 km + tarjetas dummy.
+1. Clonar el repositorio:  
+```bash
+git clone https://github.com/<usuario>/a_world_away-exoplanet_detection_with_ai.git
+cd a_world_away-exoplanet_detection_with_ai
+```
+2. Crear entorno Conda:
+```bash
+conda env create -f environment.yml
+conda activate world-away
+```
+3. Variables de entorno (env.example):
+```bash
+NASA_API_KEY=DEMO_KEY
+CACHE_TTL_H=24
+```
+4. Ejecutar la app:
+```bash
+streamlit run app/Home.py
+```
+5. Ejecutar tests:
+```bash
+pytest -q
+```
 
 ---
+
+## 📦 Fuentes de datos
+
+NASA Exoplanet Archive (Kepler, K2, TESS) – CSV o API.
+
+Light curves datasets: FITS/CSV abiertos para entrenamiento y validación.
+
+Datos de referencia para validación de candidatos confirmados.
+
+---
+
+## 📝 Tests
+
+test_preprocessing.py: normalización, padding y detrending correctos.
+
+test_models.py: predicción dummy coherente, shapes correctas.
+
+test_metrics.py: métricas calculadas sin errores.
+
+---
+
+## 🛠️ Plan de trabajo (MVP, 1–2 semanas)
+
+Día 1–2: Repo, entorno, loaders de datasets de ejemplo.
+
+Día 3–4: Implementar Random Forest y CNN 1D, gráficos dummy.
+
+Día 5–6: Entrenamiento real, métricas, exportación.
+
+Día 7+: Stretch: LSTM, interpretabilidad, modo educativo, UI refinada.
+
+---
+
+## 🎓 Contenido educativo
+
+Explicación de detección de exoplanetas.
+
+Guía de lectura de curvas de luz.
+
+Tarjetas “¿Qué estoy viendo?” con ejemplos y predicciones.
+
+Glosario: tránsito, profundidad, periodo orbital, etc.
+
+---
+
+## 🚀 Entregables
+
+Repo GitHub público con README y ejemplos de uso.
+
+Modelos entrenados guardados (.h5 / pickle).
+
+Capturas de pantalla / PNG de curvas y resultados.
+
+PDF resumen de flujo de trabajo y métricas.
+
+Video demo de 2–3 min.
+
+---
+
+## 🤝 Contribución
+
+Ana Zubieta – ciencia de datos, preprocesamiento, entrenamiento de modelos y métricas.
+Christophe Hanin – UI Streamlit, visualización, export, contenido educativo.
+Juntos – pruebas finales, documentación, video demo, repo público.
+
+---
+
+## 📄 Licencia
+
+MIT License – ver LICENSE.
